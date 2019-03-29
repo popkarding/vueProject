@@ -18,7 +18,7 @@
 
 <script>
 import header from './components/header/header.vue';
-  const URLHEADER = 'http://localhost:8080/api/seller';
+  const URLHEADER = 'http://192.168.100.101:8080/api/seller';
 export default {
   data() {
     return {
