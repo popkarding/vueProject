@@ -12,12 +12,13 @@
         <router-link to="/seller">商家</router-link>
       </div>
     </div>
-    <router-view></router-view>
+    <router-view :seller="seller"></router-view>
   </div>
 </template>
 
 <script>
 import header from './components/header/header.vue';
+
   const URLHEADER = 'http://192.168.100.101:8080/api/seller';
 export default {
   data() {
