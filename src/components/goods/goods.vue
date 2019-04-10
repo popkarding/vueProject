@@ -29,22 +29,28 @@
                 <div class="price">
                   <span class="now-price">￥{{food.price}}</span><span class="old-price" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
+                <div class="cartcontrol-wrapper">
+                  <cartcontrol @cartadd="_drop" :food="food"></cartcontrol>
+                </div>
               </div>
             </li>
           </ul>
         </li>
       </ul>
     </div>
-    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" :select-food="this.sellectFood"></shopcart>
+    <shopcart ref="shopcart" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" :select-food="sellectFood"></shopcart>
   </div>
 </template>
 <script>
 import BScroll from 'better-scroll';
 import shopcart from 'components/shopcart/shopcart';
+import cartcontrol from 'components/cartcontrol/cartcontrol';
+
 const URLHEADER = 'http://192.168.100.101:8080/api/goods';
   export default {
       components: {
-        shopcart
+        shopcart,
+        cartcontrol
       },
       props: {
           seller: {
@@ -55,13 +61,7 @@ const URLHEADER = 'http://192.168.100.101:8080/api/goods';
           return {
               goods: [],
               listHeight: [],
-              scrollY: 0,
-              sellectFood: [
-                {
-                  price: 30,
-                  count: 2
-                }
-              ]
+              scrollY: 0
           };
       },
       computed: {
@@ -74,6 +74,17 @@ const URLHEADER = 'http://192.168.100.101:8080/api/goods';
             }
           }
           return 0;
+        },
+        sellectFood() {
+          let foods = [];
+          this.goods.forEach((good) => {
+            good.foods.forEach((food) => {
+              if (food.count) {
+                foods.push(food);
+              };
+            });
+          });
+          return foods;
         }
       },
       created() {
@@ -111,6 +122,7 @@ const URLHEADER = 'http://192.168.100.101:8080/api/goods';
           click: true
         });
         this.foodScroll = new BScroll(this.$refs.foodWrapper, {
+          click: true,
           probeType: 3
         });
         // beter-scroll API
@@ -126,6 +138,9 @@ const URLHEADER = 'http://192.168.100.101:8080/api/goods';
           height += foodList[i].clientHeight;
           this.listHeight.push(height);
         }
+      },
+      _drop(event) {
+        this.$refs.shopcart.drop(event.target);
       }
       }
   };
@@ -234,5 +249,9 @@ const URLHEADER = 'http://192.168.100.101:8080/api/goods';
             .old-price
               color: rgb(147,153,159)
               text-decoration:line-through
+          .cartcontrol-wrapper
+            position: absolute
+            bottom: 12px
+            right: 0
 
 </style>

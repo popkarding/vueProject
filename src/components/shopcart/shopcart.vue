@@ -3,16 +3,16 @@
         <div class="content">
             <div class="content-left">
                 <div class="logo-wrapper">
-                    <div class="logo" :class="{highLight:count>0}">
-                      <i class="icon-shopping_cart" :class="{highLight:count>0}"></i>
+                    <div class="logo" :class="{highLight:totalCount>0}">
+                      <i class="icon-shopping_cart" :class="{highLight:totalCount>0}"></i>
                     </div>
-                    <div class="num" v-show="count>0">{{count}}</div>
+                    <div class="num" v-show="totalCount>0">{{totalCount}}</div>
                 </div>
-                <div class="price" :class="{highLight:count>0}">￥{{totalPrice}}</div>
+                <div class="price" :class="{highLight:totalCount>0}">￥{{totalPrice}}</div>
                 <div class="desc">另需配送费 ￥{{deliveryPrice}}元</div>
             </div>
             <div class="content-right">
-              <div class="pay enough">{{enoughOrNot}}</div>
+              <div class="pay" :class="payClass">{{enoughOrNot}}</div>
             </div>
         </div>
     </div>
@@ -45,7 +45,7 @@ export default {
         });
         return total;
       },
-      count() {
+      totalCount() {
         let count = 0;
         this.selectFood.forEach(food => {
           count += food.count;
@@ -63,6 +63,18 @@ export default {
         if (this.totalPrice >= this.minPrice) {
           return `去结算`;
         };
+      },
+      payClass() {
+        if (this.totalPrice < this.minPrice) {
+          return 'not-enough';
+        } else {
+          return 'enough';
+        }
+      }
+    },
+    methods: {
+      drop(event) {
+        console.log(event);
       }
     }
 };
@@ -154,6 +166,6 @@ export default {
         &.not-enough
           background-color: #2b333b
         &.enough
-          background-color: green
+          background-color: #00b43c
           color: #ffffff
 </style>
