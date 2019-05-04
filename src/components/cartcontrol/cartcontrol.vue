@@ -1,12 +1,12 @@
 <template>
   <div class="cartcontrol">
     <transition name="roll">
-      <div @click="decreaseCart" class="cart-decrease" v-show="this.food.count>0">
+      <div @click.stop.prevent="decreaseCart" class="cart-decrease" v-show="this.food.count>0">
         <span class="inner icon-remove_circle_outline"></span>
       </div>
     </transition>
     <div class="cart-count" v-show="this.food.count>0">{{food.count}}</div>
-    <div class="cart-add icon-add_circle" @click="selectFood"></div>
+    <div class="cart-add icon-add_circle" @click.stop.prevent="selectFood"></div>
   </div>
 </template>
 <script>
@@ -55,7 +55,7 @@ export default {
       transition: all 0.4s linear
       &.roll-active,&.roll-leave-active
         opacity: 1
-        transform: translate3D(0,0,0)
+        transform: translate3d(0,0,0)
         .inner
           transform: rotate(0)
       .inner
@@ -66,7 +66,7 @@ export default {
           transition: all 0.4s linear
       &.roll-enter,&.roll-leave-to
         opacity: 0
-        transform: translate3D(24px,0,0)
+        transform: translate3d(24px,0,0)
         .inner
           transform: rotate(180deg)
     .cart-count

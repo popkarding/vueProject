@@ -12,18 +12,25 @@
         <router-link to="/seller">商家</router-link>
       </div>
     </div>
-    <router-view :seller="seller"></router-view>
-  </div>
+   <keep-alive>
+   <router-view :seller="seller"></router-view>
+   </keep-alive>
+   </div>
 </template>
 
 <script>
 import header from './components/header/header.vue';
-
-  const URLHEADER = 'http://192.168.100.101:8080/api/seller';
+import {urlParse} from 'common/js/utils.js';
+const URLHEADER = 'api/seller';
 export default {
   data() {
     return {
-      seller: {}
+      seller: {
+        id: (() => {
+          let queryParam = urlParse();
+          return queryParam.id;
+        })()
+      }
     };
   },
   components: {
@@ -34,14 +41,14 @@ export default {
     },
     methods: {
       getData() {
+        console.log(this.seller);
         const ERR_OK = 0;
         this.$http({
           method: 'get',
-          url: URLHEADER
+          url: URLHEADER + '?id=' + this.seller.id
         }).then((res) => {
           if (res.data.errno === ERR_OK) {
-            console.log(res.data.data);
-            this.seller = res.data.data;
+            this.seller = Object.assign({}, this.seller, res.data.data);
           }
         });
       }

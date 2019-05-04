@@ -1,4 +1,5 @@
 <template>
+  <div>
   <div class="goods">
     <div class="menu-wrapper" ref="menuWrapper">
       <ul>
@@ -14,7 +15,7 @@
         <li v-for="item in goods" class="food-list food-list-hook" :key="item.name">
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li v-for="food in item.foods" :key="food.name" class="food-item border-1px">
+            <li v-for="food in item.foods" @click="selectFood(food,$event)" :key="food.name" class="food-item border-1px">
               <div class="image">
                 <img width="57" height="57" :src="food.icon" alt="pic">
               </div>
@@ -40,17 +41,20 @@
     </div>
     <shopcart ref="shopcart" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" :select-food="sellectFood"></shopcart>
   </div>
+  <food :food="selectedFood" ref="food" @fooCartadd="_drop"></food>
+  </div>
 </template>
 <script>
 import BScroll from 'better-scroll';
 import shopcart from 'components/shopcart/shopcart';
 import cartcontrol from 'components/cartcontrol/cartcontrol';
-
-const URLHEADER = 'http://192.168.100.101:8080/api/goods';
+import food from 'components/food/food';
+const URLHEADER = 'api/goods';
   export default {
       components: {
         shopcart,
-        cartcontrol
+        cartcontrol,
+        food
       },
       props: {
           seller: {
@@ -61,7 +65,8 @@ const URLHEADER = 'http://192.168.100.101:8080/api/goods';
           return {
               goods: [],
               listHeight: [],
-              scrollY: 0
+              scrollY: 0,
+              selectedFood: {}
           };
       },
       computed: {
@@ -96,7 +101,6 @@ const URLHEADER = 'http://192.168.100.101:8080/api/goods';
           if (!event._constructed) {
             return;
           }
-          console.log(index);
           let foodList = this.$refs.foodWrapper.getElementsByClassName('food-list-hook');
           let el = foodList[index];
           this.foodScroll.scrollToElement(el, 300);
@@ -108,7 +112,6 @@ const URLHEADER = 'http://192.168.100.101:8080/api/goods';
           url: URLHEADER
         }).then((res) => {
           if (res.data.errno === ERR_OK) {
-            console.log(res.data.data);
             this.goods = res.data.data;
             this.$nextTick(() => {
             this._initScroll();
@@ -116,6 +119,13 @@ const URLHEADER = 'http://192.168.100.101:8080/api/goods';
           });
           };
         });
+      },
+      selectFood(food, event) {
+         if (!event._constructed) {
+            return;
+          }
+          this.selectedFood = food;
+          this.$refs.food.show();
       },
       _initScroll() {
         this.menuScroll = new BScroll(this.$refs.menuWrapper, {
@@ -140,7 +150,10 @@ const URLHEADER = 'http://192.168.100.101:8080/api/goods';
         }
       },
       _drop(event) {
-        this.$refs.shopcart.drop(event.target);
+        // 优化异步执行下落动画
+        this.$nextTick(() => {
+         this.$refs.shopcart.drop(event.target);
+        });
       }
       }
   };
@@ -166,7 +179,7 @@ const URLHEADER = 'http://192.168.100.101:8080/api/goods';
         display: table
         padding:0 12px
         &.current
-          margin-top: -1
+          margin-top: -1px
           position:relative
           z-index: 10
           background-color: #ffffff
