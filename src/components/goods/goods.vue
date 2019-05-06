@@ -49,6 +49,8 @@ import BScroll from 'better-scroll';
 import shopcart from 'components/shopcart/shopcart';
 import cartcontrol from 'components/cartcontrol/cartcontrol';
 import food from 'components/food/food';
+import {mockData} from 'common/js/data.js';
+
 const URLHEADER = 'api/goods';
   export default {
       components: {
@@ -94,7 +96,8 @@ const URLHEADER = 'api/goods';
       },
       created() {
       this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
-          this.getData();
+          // this.getData();
+          this.gitGetData();
       },
       methods: {
         selectMenu(index, event) {
@@ -119,6 +122,13 @@ const URLHEADER = 'api/goods';
           });
           };
         });
+      },
+      gitGetData() {
+        this.goods = mockData().goods;
+        this.$nextTick(() => {
+            this._initScroll();
+            this._calculateHeight();
+          });
       },
       selectFood(food, event) {
          if (!event._constructed) {

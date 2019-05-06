@@ -21,6 +21,7 @@
 <script>
 import header from './components/header/header.vue';
 import {urlParse} from 'common/js/utils.js';
+import {mockData} from 'common/js/data.js';
 const URLHEADER = 'api/seller';
 export default {
   data() {
@@ -37,7 +38,8 @@ export default {
     'v-header': header
   },
   created() {
-      this.getData();
+      // this.getData();
+      this.gitGetData();
     },
     methods: {
       getData() {
@@ -51,6 +53,9 @@ export default {
             this.seller = Object.assign({}, this.seller, res.data.data);
           }
         });
+      },
+      gitGetData() {
+        this.seller = mockData().seller;
       }
     }
 };

@@ -69,6 +69,7 @@ import star from 'components/star/star';
 import split from 'components/split/split';
 import ratingselect from 'components/ratingselect/ratingselect';
 import {formatDate} from 'common/js/date.js';
+import {mockData} from 'common/js/data.js';
 import BScroll from 'better-scroll';
 const ALL = 2;
 const ERR_OK = 0;
@@ -88,6 +89,7 @@ export default {
         };
     },
     created() {
+       this.gitGetData();
         this.$http({
             method: 'get',
             url: URLHEADER
@@ -120,6 +122,10 @@ export default {
                     });
                 }
             });
+        },
+        gitGetData() {
+          this.ratings = mockData().ratings;
+          this._initScroll();
         },
         pickType(type) {
           this.selectType = type;
